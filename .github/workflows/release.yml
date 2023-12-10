@@ -126,17 +126,11 @@ jobs:
           commit: ${{ github.sha }}
           updateOnlyUnreleased: true
           artifacts: builds/hyde, builds/checksum.txt
+          generateReleaseNotes: true
           body: |
-            ## Experimental development build
-            
-            This is an automated experimental development build of the application.
-            It is not guaranteed to be stable and may not work at all.
-            
             ### Checksum
             
             SHA256 checksum of the application binary:
             ```
             ${{ env.CHECKSUM }}
             ```
-
-          prerelease: true
