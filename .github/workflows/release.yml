@@ -17,13 +17,12 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ref: stable
+          ref: master
 
       - name: Merge stable into master
         run: |
-          git fetch origin master:master
-          git reset --hard master
-          git merge --no-ff --no-edit stable
+          git fetch origin stable:stable
+          git merge stable
           git push origin master
 
   build:
@@ -122,9 +121,10 @@ jobs:
       - name: Create a release
         uses: ncipollo/release-action@v1
         with:
-          # token: ${{ secrets.RELEASE_TOKEN }}
-          name: ${{ env.VERSION }}
-          tag: ${{ env.VERSION }}
+          name: v${{ env.VERSION }}
+          tag: v${{ env.VERSION }}
+          commit: ${{ github.sha }}
+          updateOnlyUnreleased: true
           artifacts: builds/hyde, builds/checksum.txt
           body: |
             ## Experimental development build
