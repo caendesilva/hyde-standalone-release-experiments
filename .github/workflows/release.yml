@@ -8,6 +8,7 @@ permissions:
   contents: read
 
 jobs:
+
   sync:
     runs-on: ubuntu-latest
     name: Merge stable branch into master
@@ -15,8 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-        ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
-        ref: stable
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ref: stable
 
       - name: Merge stable into master
         run: |
@@ -121,9 +122,10 @@ jobs:
       - name: Create a release
         uses: ncipollo/release-action@v1
         with:
-          # token: ${{ secrets.RELEASE_TOKEN }}
-          name: ${{ env.VERSION }}
-          tag: ${{ env.VERSION }}
+          name: v${{ env.VERSION }}
+          tag: v${{ env.VERSION }}
+          commit: ${{ github.sha }}
+          updateOnlyUnreleased: true
           artifacts: builds/hyde, builds/checksum.txt
           body: |
             ## Experimental development build
