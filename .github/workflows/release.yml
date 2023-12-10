@@ -8,6 +8,23 @@ permissions:
   contents: read
 
 jobs:
+  sync:
+    runs-on: ubuntu-latest
+    name: Merge stable branch into master
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+        ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        ref: stable
+
+      - name: Merge stable into master
+        run: |
+          git fetch origin master:master
+          git reset --hard master
+          git merge --no-ff --no-edit stable
+          git push origin master
+
   build:
     runs-on: ubuntu-latest
     name: Build standalone executable
