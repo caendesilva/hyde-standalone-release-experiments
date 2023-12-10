@@ -48,7 +48,8 @@ jobs:
         id: build-version
         run: |
           echo "version=$(php ./bin/get-release-version.php)" >> $GITHUB_OUTPUT
-          echo "Version: ${{ steps.build-version.outputs.version }}"
+          echo "Version: v$(php ./bin/get-release-version.php)"
+          php ./bin/get-release-version.php > version 
 
       - name: Build executable
         run: php hyde standalone:build --build-version-suffix="${{ steps.build-version.outputs.sha_short }}"
