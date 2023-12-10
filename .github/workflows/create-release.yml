@@ -1,0 +1,54 @@
+name: Create a new release
+
+on:
+  workflow_dispatch:
+    inputs:
+      type:
+        type: choice
+        description: The SemVer level of the release
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    name: Prepare a new release
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ref: stable
+
+      - name: Reset to master
+        run: |
+          git fetch origin master:master
+          git reset --hard master
+
+      - name: Bump application version
+        id: bump-version
+        run: |
+          php bin/bump-application-version.php ${{ github.event.inputs.type }}
+          echo "version=$(php ./bin/get-release-version.php)" >> $GITHUB_OUTPUT
+          echo "Version: v$(php ./bin/get-release-version.php)"
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "HydeCLI v${{ steps.bump-version.outputs.version }}"
+          title: "HydeCLI v${{ steps.bump-version.outputs.version }}"
+          branch: "release/v${{ steps.bump-version.outputs.version }}"
+          delete-branch: true
+
+          body: |
+            This pull request was automatically created by the [HydeCLI release workflow](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
+
+            Please review and merge it to publish a new release, which will be created automatically.
+          reviewers: caendesilva
+          labels: release
