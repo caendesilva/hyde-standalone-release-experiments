@@ -62,14 +62,16 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: hyde.phar
+          name: hyde
           path: .
 
       - name: Install Box
         run: composer global require humbug/box
 
       - name: Setup phar for Dockerization
-        run: chmod +x hyde.phar
+        run: |
+          mv hyde hyde.phar
+          chmod +x hyde.phar
 
       - name: Create Dockerfile
         run: box docker ./hyde.phar
