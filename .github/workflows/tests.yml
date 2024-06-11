@@ -58,7 +58,7 @@ jobs:
           chmod +x builds/hyde.phar
 
       - name: Create Dockerfile
-        run: ./vendor/laravel-zero/framework/bin/box.bat docker ./builds/hyde.phar
+        run: ./vendor/laravel-zero/framework/bin/box docker ./builds/hyde.phar
 
       - name: Build Docker image
         run: docker build -t hyde .
