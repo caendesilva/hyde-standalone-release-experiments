@@ -23,11 +23,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Phar for Dockerization
-        run: |
-          mv builds/hyde hyde.phar
-          chmod +x hyde.phar
-
       # Install the cosign tool
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
