@@ -50,3 +50,15 @@ jobs:
         with:
           name: hyde
           path: builds/hyde
+
+      # Docker proof of concept
+      - name: Setup phar for Dockerization
+        run: |
+          cp builds/hyde builds/hyde.phar
+          chmod +x builds/hyde.phar
+
+      - name: Create Dockerfile
+        run: ./vendor/laravel-zero/framework/bin/box.bat docker ./builds/hyde.phar
+
+      - name: Build Docker image
+        run: docker build -t hyde .
