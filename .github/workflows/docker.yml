@@ -51,14 +51,28 @@ jobs:
           name: hyde
           path: builds/hyde
 
-      # Docker proof of concept
+
+  # Docker proof of concept
+  build-docker-image:
+    needs: build-executable
+    name: Build Docker image
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: hyde.phar
+          path: .
+
+      - name: Install Box
+        run: composer global require humbug/box
+
       - name: Setup phar for Dockerization
-        run: |
-          cp builds/hyde builds/hyde.phar
-          chmod +x builds/hyde.phar
+        run: chmod +x hyde.phar
 
       - name: Create Dockerfile
-        run: ./vendor/laravel-zero/framework/bin/box docker ./builds/hyde.phar
+        run: box docker ./hyde.phar
 
       - name: Build Docker image
         run: docker build -t hyde .
